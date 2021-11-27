@@ -1,5 +1,7 @@
-./bin/main: ./src/main.c ./src/tree.c ./src/binary_tree.c ./bin
-	gcc -Wall -Wextra src/binary_tree.c ./src/tree.c src/main.c -o bin/main
+SRCS=./src/main.c ./src/list.c ./src/binary_tree.c
+
+./bin/main: $(SRCS) ./bin
+	gcc -Wall -Wextra $(SRCS) -o bin/main
 
 ./bin:
 	mkdir ./bin

@@ -75,11 +75,10 @@ void free_nodes(node **nodes) {
 
 }
 
-int alpha_compare(void *n1, void *n2) { return strcmp(((node*)n1)->key, ((node*)n2)->key); }
-int alpha_find(void *n, void *key) { return strcmp(((node*)n)->key, key); }
-void f_print(void *n) { printf("%s - %d\n", ((node*)n)->key, ((node*)n)->freq); }
+int alpha_compare(void *n1, void *n2) { return strcasecmp(((node*)n1)->key, ((node*)n2)->key); }
+int alpha_find(void *n, void *key) { return strcasecmp(((node*)n)->key, key); }
 
-tree* get_alpha_tree(node **nodes);
+list* get_alpha_tree(node **nodes);
 
 int main(int argc, char **argv) {
 
@@ -90,9 +89,9 @@ int main(int argc, char **argv) {
 
     node** nodes = node_read_file(argv[1]);
 
-    tree *alpha_tree = get_alpha_tree(nodes);
+    list *alpha_tree = get_alpha_tree(nodes);
 
-    iterator *it = tree_iterator(alpha_tree);
+    iterator *it = list_iterator(alpha_tree);
 
     for (iterator *i = it; i->node != NULL; i = i->next) {
         node *n = i->node;
@@ -102,18 +101,18 @@ int main(int argc, char **argv) {
 
     iterator_free(it);
 
-    tree_free(alpha_tree, NULL);
+    list_free(alpha_tree, NULL);
 
     free_nodes(nodes);
 
 }
 
-tree* get_alpha_tree(node **nodes) {
+list* get_alpha_tree(node **nodes) {
 
-    tree *alpha_tree = tree_create(alpha_compare, alpha_find, BINARY_TREE);
+    list *alpha_tree = list_create(alpha_compare, alpha_find, BINARY_TREE);
 
     for (node **n = nodes; *n != NULL; n++) {
-        tree_add(alpha_tree, *n);
+        list_add(alpha_tree, *n);
     }
 
     return alpha_tree;

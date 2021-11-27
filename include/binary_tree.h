@@ -1,7 +1,7 @@
 #ifndef BINARY_TREE_H
 #define BINARY_TREE_H
 
-#include "tree.h"
+#include "list.h"
 
 #define BINARY_TREE binary_tree_handler
 

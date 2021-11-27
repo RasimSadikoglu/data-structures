@@ -1,19 +1,19 @@
-#include "../include/tree.h"
+#include "../include/list.h"
 
 #include <stdlib.h>
 
-struct tree {
+struct list {
     void *container; 
     void* (*container_handler)(void *container, void *p, int (*node_handler)(void*, void*), int op);
     int (*node_compare)(void*, void*);
     int (*node_find)(void*, void*);
 };
 
-tree* tree_create(int (*node_compare)(void*, void*), int (*node_find)(void*, void*), void *tree_type) {
+list* list_create(int (*node_compare)(void*, void*), int (*node_find)(void*, void*), void *list_type) {
 
-    tree *t = malloc(sizeof(tree));
+    list *t = malloc(sizeof(list));
 
-    t->container_handler = tree_type;
+    t->container_handler = list_type;
 
     t->node_compare = node_compare;
     t->node_find = node_find;
@@ -23,7 +23,7 @@ tree* tree_create(int (*node_compare)(void*, void*), int (*node_find)(void*, voi
     return t;
 }
 
-int tree_add(tree *t, void *node) {
+int list_add(list *t, void *node) {
 
     void *root = t->container_handler(t->container, node, t->node_compare, CONTAINER_ADD);
 
@@ -33,24 +33,24 @@ int tree_add(tree *t, void *node) {
 
 }
 
-void* tree_get(tree *t, void *key) {
+void* list_get(list *t, void *key) {
 
     return t->container_handler(t->container, key, t->node_find, CONTAINER_GET);
 
 }
 
-int tree_remove(tree *t, void *key) {
+int list_remove(list *t, void *key) {
 
     return t->container_handler(t->container, key, t->node_find, CONTAINER_REMOVE) == NULL;
 
 }
 
-iterator* tree_iterator(tree *t) {
+iterator* list_iterator(list *t) {
 
     return t->container_handler(t->container, NULL, NULL, CONTAINER_ITERATOR);
 }
 
-void tree_free(tree *t, void (*node_free)(void*)) {
+void list_free(list *t, void (*node_free)(void*)) {
 
     t->container_handler(t->container, node_free, NULL, CONTAINER_FREE);
 
