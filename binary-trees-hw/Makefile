@@ -7,7 +7,7 @@ SRCS=main.c node.c ../src/list.c ../src/binary_search_tree.c
 	mkdir ../bin
 
 run: ../bin/main
-	../bin/main ../files/input.txt
+	../bin/main ./files/input.txt
 
 clean:
 	rm ../bin/* ../*stackdump
