@@ -17,19 +17,19 @@ typedef struct iterator {
 #define CONTAINER_FREE 4
 #define CONTAINER_ITERATOR 5
 
+// Node Operations
+#define NODE_NODE_COMPARE 0
+#define NODE_KEY_COMPARE 1
+#define NODE_FREE 2
+
 /**
  * @param list_type 
  * List type is a handler function for container 
- * @param node_node_compare 
- * Compare function for 2 nodes, return the difference [arg1 - arg2].
- * @param node_key_compare
- * Compare function for node and a key for that node, return the difference [arg1 - arg2].
- * @param node_free
- * Memory free function for nodes, NULL for no implicit free, all nodes has to be freed 
- * before termination.
+ * @param node_handler
+ * Node handler function has to implement all node operations.
  * @return list*
  */
-list* list_create(void *list_type, int (*node_node_compare)(const void*, const void*), int (*node_key_compare)(const void*, const void*), void (*node_free)(void*));
+list* list_create(void *list_type, int (*node_handler)(const void*, const void*, int op));
 
 /**
  * @param t

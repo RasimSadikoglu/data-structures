@@ -9,17 +9,24 @@ typedef struct container {
 } container;
 
 container* binary_search_tree_create() {
-    return calloc(sizeof(container), 1);
+
+    container *c = malloc(sizeof(container));
+
+    c->node = NULL;
+    c->left = NULL;
+    c->right = NULL;
+
+    return c;
 }
 
-void* binary_search_tree_add(container *c, void *node, int (*node_handler)(const void*, const void*)) {
+void* binary_search_tree_add(container *c, void *node, int (*node_handler)(const void*, const void*, int op)) {
     
     if (c->node == NULL) {
         c->node = node;
         return NULL;
     }
 
-    if (node_handler(c->node, node) > 0) {
+    if (node_handler(c->node, node, NODE_NODE_COMPARE) > 0) {
         if (c->left == NULL) c->left = binary_search_tree_create();
         return binary_search_tree_add(c->left, node, node_handler);
     } else {
@@ -28,18 +35,18 @@ void* binary_search_tree_add(container *c, void *node, int (*node_handler)(const
     }
 }
 
-void* binary_search_tree_get(container *c, void *key, int (*node_handler)(const void*, const void*)) {
+void* binary_search_tree_get(container *c, void *key, int (*node_handler)(const void*, const void*, int op)) {
     
     if (c->node == NULL) return NULL;
 
-    int cmp = node_handler(c->node, key);
+    int cmp = node_handler(c->node, key, NODE_KEY_COMPARE);
 
     if (cmp == 0) return c->node;
     else if (cmp > 0) return c->left == NULL ? NULL : binary_search_tree_get(c->left, key, node_handler);
     else return c->right == NULL ? NULL : binary_search_tree_get(c->right, key, node_handler);
 }
 
-void* binary_search_tree_remove(container *c, void *key, int (*node_handler)(const void*, const void*)) {
+void* binary_search_tree_remove(container *c, void *key, int (*node_handler)(const void*, const void*, int op)) {
     return NULL;
 }
 
@@ -57,19 +64,18 @@ void binary_search_tree_iterator(container *c, iterator **it, int depth) {
     if (c->right != NULL) binary_search_tree_iterator(c->right, it, depth + 1);
 }
 
-void* binary_search_tree_free(container *c, void (*node_free)(void*)) {
+void binary_search_tree_free(container *c, int (*node_handler)(const void*, const void*, int op)) {
 
-    if (node_free != NULL) node_free(c->node);
+    node_handler(c->node, NULL, NODE_FREE);
 
-    if (c->left != NULL) binary_search_tree_free(c->left, node_free);
-    if (c->right != NULL) binary_search_tree_free(c->right, node_free); 
+    if (c->left != NULL) binary_search_tree_free(c->left, node_handler);
+    if (c->right != NULL) binary_search_tree_free(c->right, node_handler); 
 
     free(c);
 
-    return NULL;
 }
 
-void* binary_search_tree_handler(void *container, void *p, int (*node_handler)(const void*, const void*), int op) {
+void* binary_search_tree_handler(void *container, void *p, int (*node_handler)(const void*, const void*, int op), int op) {
 
     switch (op) {
         case CONTAINER_CREATE:
@@ -82,10 +88,11 @@ void* binary_search_tree_handler(void *container, void *p, int (*node_handler)(c
             return binary_search_tree_remove(container, p, node_handler);
         case CONTAINER_ITERATOR:;
             iterator *it = calloc(sizeof(iterator), 1), *it_c = it;
-            binary_search_tree_iterator(container, &it_c, 1);
+            binary_search_tree_iterator(container, &it_c, 0);
             return it;
         case CONTAINER_FREE:
-            return binary_search_tree_free(container, p);
+            binary_search_tree_free(container, p);
+            return NULL;
         default:
             return NULL;
     }

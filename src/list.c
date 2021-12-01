@@ -4,21 +4,17 @@
 
 struct list {
     void *container; 
-    void* (*container_handler)(void *container, void *p, int (*node_handler)(const void*, const void*), int op);
-    int (*node_node_compare)(const void*, const void*);
-    int (*node_key_compare)(const void*, const void*);
-    void (*node_free)(void*);
+    void* (*container_handler)(void *container, void *p, int (*node_handler)(const void*, const void*, int op), int op);
+    int (*node_handler)(const void*, const void*, int op);
 };
 
-list* list_create(void *list_type, int (*node_node_compare)(const void*, const void*), int (*node_key_compare)(const void*, const void*), void (*node_free)(void*)) {
+list* list_create(void *list_type, int (*node_handler)(const void*, const void*, int op)) {
 
     list *t = malloc(sizeof(list));
 
     t->container_handler = list_type;
 
-    t->node_node_compare = node_node_compare;
-    t->node_key_compare = node_key_compare;
-    t->node_free = node_free;
+    t->node_handler = node_handler;
 
     t->container = t->container_handler(NULL, NULL, NULL, CONTAINER_CREATE);
 
@@ -27,7 +23,7 @@ list* list_create(void *list_type, int (*node_node_compare)(const void*, const v
 
 int list_add(list *t, void *node) {
 
-    void *root = t->container_handler(t->container, node, t->node_node_compare, CONTAINER_ADD);
+    void *root = t->container_handler(t->container, node, t->node_handler, CONTAINER_ADD);
 
     if (root != NULL) t->container = root;
 
@@ -37,13 +33,17 @@ int list_add(list *t, void *node) {
 
 void* list_get(list *t, void *key) {
 
-    return t->container_handler(t->container, key, t->node_key_compare, CONTAINER_GET);
+    return t->container_handler(t->container, key, t->node_handler, CONTAINER_GET);
 
 }
 
 int list_remove(list *t, void *key) {
 
-    return t->container_handler(t->container, key, t->node_key_compare, CONTAINER_REMOVE) == NULL;
+    void *container = t->container_handler(t->container, key, t->node_handler, CONTAINER_REMOVE);
+    
+    if (container != NULL) t->container = container;
+
+    return 0;
 
 }
 
@@ -54,7 +54,7 @@ iterator* list_iterator(list *t) {
 
 void list_free(list *t) {
 
-    t->container_handler(t->container, t->node_free, NULL, CONTAINER_FREE);
+    t->container_handler(t->container, t->node_handler, NULL, CONTAINER_FREE);
 
     free(t);
 }

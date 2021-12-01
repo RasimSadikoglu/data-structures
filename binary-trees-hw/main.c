@@ -7,8 +7,19 @@
 
 #define CHAR_LENGTH 50
 
-int alpha_node_node_compare(const void *n1, const void *n2) { return strcasecmp(((node*)n1)->key, ((node*)n2)->key); }
-int alpha_node_key_compare(const void *n, const void *key) { return strcasecmp(((node*)n)->key, key); }
+int alpha_node_handler(const void *n1, const void *n2, int op) {
+
+    switch (op) {
+
+        case NODE_NODE_COMPARE:
+            return strcasecmp(((node*)n1)->key, ((node*)n2)->key);
+        case NODE_KEY_COMPARE:
+            return strcasecmp(((node*)n1)->key, n2);
+        default:
+            return 0;
+    }
+
+}
 
 int freq_node_node_compare(const void *n1, const void *n2) { return (*((node**)n2))->freq - (*((node**)n1))->freq; }
 
@@ -56,7 +67,7 @@ int main(int argc, char **argv) {
 
 list* get_alpha_tree(node **nodes) {
 
-    list *alpha_tree = list_create(BINARY_SEARCH_TREE, alpha_node_node_compare, alpha_node_key_compare, NULL);
+    list *alpha_tree = list_create(BINARY_SEARCH_TREE, alpha_node_handler);
 
     for (node **n = nodes; *n != NULL; n++) {
         list_add(alpha_tree, *n);
@@ -72,10 +83,10 @@ int get_alpha_access_time(list *l) {
     iterator *it = list_iterator(l);
 
     for (iterator *i = it; i->node != NULL; i = i->next) {
-        access_time += i->location * ((node*)i->node)->freq;
+        access_time += (i->location + 1) * ((node*)i->node)->freq;
     }
 
-    free(it);
+    iterator_free(it);
 
     return access_time;
 }
