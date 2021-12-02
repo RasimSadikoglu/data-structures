@@ -9,18 +9,20 @@ typedef struct iterator {
     int location;
 } iterator;
 
-// Container Operations
-#define CONTAINER_CREATE 0
-#define CONTAINER_ADD 1
-#define CONTAINER_GET 2
-#define CONTAINER_REMOVE 3
-#define CONTAINER_FREE 4
-#define CONTAINER_ITERATOR 5
+enum container_operations {
+    CONTAINER_CREATE,
+    CONTAINER_ADD,
+    CONTAINER_GET,
+    CONTAINER_REMOVE,
+    CONTAINER_FREE,
+    CONTAINER_ITERATOR
+};
 
-// Node Operations
-#define NODE_NODE_COMPARE 0
-#define NODE_KEY_COMPARE 1
-#define NODE_FREE 2
+enum node_operations {
+    NODE_NODE_COMPARE,
+    NODE_KEY_COMPARE,
+    NODE_FREE
+};
 
 /**
  * @param list_type 

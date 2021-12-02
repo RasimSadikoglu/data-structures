@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 struct list {
-    void *container; 
+    void *container;
     void* (*container_handler)(void *container, void *p, int (*node_handler)(const void*, const void*, int op), int op);
     int (*node_handler)(const void*, const void*, int op);
 };
@@ -39,9 +39,9 @@ void* list_get(list *t, void *key) {
 
 int list_remove(list *t, void *key) {
 
-    void *container = t->container_handler(t->container, key, t->node_handler, CONTAINER_REMOVE);
-    
-    if (container != NULL) t->container = container;
+    void *root = t->container_handler(t->container, key, t->node_handler, CONTAINER_REMOVE);
+
+    if (root != NULL) t->container = root;
 
     return 0;
 
