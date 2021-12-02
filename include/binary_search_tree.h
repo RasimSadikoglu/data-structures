@@ -3,8 +3,8 @@
 
 #include "list.h"
 
-#define BINARY_SEARCH_TREE binary_search_tree_handler
+#define BINARY_SEARCH_TREE binary_search_tree_handler_address
 
-void* binary_search_tree_handler(void *container, void *p, int (*node_handler)(const void*, const void*, int op), int op);
+void* binary_search_tree_handler_address();
 
 #endif // BINARY_SEARCH_TREE_H

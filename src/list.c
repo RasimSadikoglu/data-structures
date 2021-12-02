@@ -8,11 +8,11 @@ struct list {
     int (*node_handler)(const void*, const void*, int op);
 };
 
-list* list_create(void *list_type, int (*node_handler)(const void*, const void*, int op)) {
+list* list_create(void* (*list_type)(), int (*node_handler)(const void*, const void*, int op)) {
 
     list *t = malloc(sizeof(list));
 
-    t->container_handler = list_type;
+    t->container_handler = list_type();
 
     t->node_handler = node_handler;
 

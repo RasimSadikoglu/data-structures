@@ -3,8 +3,8 @@
 
 #include "list.h"
 
-#define BINOMIAL_HEAP binomial_heap_handler
+#define BINOMIAL_HEAP binomial_heap_handler_address
 
-void* binomial_heap_handler(void *container, void *p, int (*node_handler)(const void*, const void*, int op), int op);
+void* binomial_heap_handler_address();
 
 #endif // BINOMIAL_HEAP_H

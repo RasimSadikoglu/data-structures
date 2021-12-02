@@ -31,7 +31,7 @@ enum node_operations {
  * Node handler function has to implement all node operations.
  * @return list*
  */
-list* list_create(void *list_type, int (*node_handler)(const void*, const void*, int op));
+list* list_create(void* (*list_type)(), int (*node_handler)(const void*, const void*, int op));
 
 /**
  * @param t

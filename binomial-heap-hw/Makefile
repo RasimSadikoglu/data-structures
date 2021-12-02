@@ -7,7 +7,7 @@ SRCS=main.c node.c ../src/list.c ../src/binomial_heap.c
 	mkdir ../bin
 
 run: ../bin/main
-	../bin/main ../files/input.txt
+	../bin/main
 
 clean:
 	rm ../bin/* ../*stackdump

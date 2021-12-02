@@ -183,3 +183,7 @@ void* binomial_heap_handler(void *container, void *p, int (*node_handler)(const 
             return NULL;
     }
 }
+
+void* binomial_heap_handler_address() {
+    return binomial_heap_handler;
+}

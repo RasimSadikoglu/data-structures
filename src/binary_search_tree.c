@@ -1,6 +1,7 @@
 #include "../include/binary_search_tree.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct container {
     void *node;
@@ -96,4 +97,8 @@ void* binary_search_tree_handler(void *container, void *p, int (*node_handler)(c
         default:
             return NULL;
     }
+}
+
+void* binary_search_tree_handler_address() {
+    return binary_search_tree_handler;
 }
