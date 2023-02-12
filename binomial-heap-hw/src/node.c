@@ -9,7 +9,8 @@ node* node_create(char *file_name, int key) {
     
     node *n = malloc(sizeof(node));
 
-    strncpy(n->file_name, file_name, CHAR_LENGTH);
+    strncpy(n->file_name, file_name, CHAR_LENGTH - 1);
+    n->file_name[CHAR_LENGTH - 1] = '\0';
     n->key = key;
 
     return n;
@@ -21,7 +22,7 @@ int is_word_boundry(char c) {
 
 int number_of_occurences(char *file_content, char *keyword) {
 
-    int keyword_length = strlen(keyword), file_length = strlen(file_content);
+    size_t keyword_length = strlen(keyword), file_length = strlen(file_content);
 
     if (keyword_length > file_length) return 0;
 
@@ -29,7 +30,7 @@ int number_of_occurences(char *file_content, char *keyword) {
 
     occurence_count += strncmp(file_content, keyword, keyword_length) == 0 && is_word_boundry(file_content[keyword_length]);
 
-    int i; for (i = 1; i < file_length - keyword_length; i++) {
+    size_t i; for (i = 1; i < file_length - keyword_length; i++) {
         occurence_count += strncmp(file_content + i, keyword, keyword_length) == 0 && 
             is_word_boundry(file_content[i - 1]) && is_word_boundry(file_content[i + keyword_length]);
     }
@@ -49,11 +50,11 @@ node* read_file(char *file_name, char *keyword) {
     }
 
     fseek(input_file, 0, SEEK_END);
-    int file_size = ftell(input_file);
+    long file_size = ftell(input_file);
     rewind(input_file);
 
-    char *file_content = malloc(file_size + 1);
-    fread(file_content, sizeof(char), file_size, input_file);
+    char *file_content = malloc((unsigned long)file_size + 1);
+    fread(file_content, sizeof(char), (unsigned long)file_size, input_file);
     file_content[file_size] = '\0';
 
     node *n = node_create(file_name, number_of_occurences(file_content, keyword));
@@ -78,10 +79,11 @@ node** node_read_files(char *directory_path, char *keyword) {
             file_names[current_index] = malloc(sizeof(char) * CHAR_LENGTH);
             
             strcpy(file_names[current_index], directory_path);
-            strncat(file_names[current_index++], file_info->d_name, CHAR_LENGTH - 6);
+            strncat(file_names[current_index], file_info->d_name, CHAR_LENGTH - strlen(directory_path) - 1);
+            file_names[current_index++][CHAR_LENGTH - 1] = '\0';
 
-            file_names = realloc(file_names, sizeof(char*) * (current_index + 1));
-            file_names[current_index] = NULL;       
+            file_names = realloc(file_names, sizeof(char*) * (size_t)(current_index + 1));
+            file_names[current_index] = NULL;
         }
     }
 
@@ -94,7 +96,7 @@ node** node_read_files(char *directory_path, char *keyword) {
 
         nodes[current_index++] = read_file(*file_name, keyword);
         
-        nodes = realloc(nodes, sizeof(node*) * (current_index + 1));
+        nodes = realloc(nodes, sizeof(node*) * (size_t)(current_index + 1));
         nodes[current_index] = NULL;
 
         free(*file_name);

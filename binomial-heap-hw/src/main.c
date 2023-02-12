@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "../include/binomial_heap.h"
+#include "binomial_heap.h"
 #include "node.h"
 
 #define MAX_RESULTS 5
@@ -12,7 +12,7 @@ int node_handler(const void *p1, const void *p2, int op) {
     switch (op) {
 
         case NODE_NODE_COMPARE:
-            return ((node*)p2)->key - ((node*)p1)->key;
+            return ((const node*)p2)->key - ((const node*)p1)->key;
         default:
             return 0;
     }
